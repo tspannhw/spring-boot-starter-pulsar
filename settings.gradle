@@ -1,0 +1,7 @@
+rootProject.name = 'spring-boot-starter-pulsar'
+
+include("pulsar-spring-boot-starter")
+include("pulsar-spring-boot-autoconfigure")
+include("pulsar-spring-boot-sample")
+include("pulsar-spring-boot-test")
+include("pulsar-spring-boot-test-autoconfigure")
