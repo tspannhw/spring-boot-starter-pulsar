@@ -19,6 +19,7 @@
 package com.github.pulsar.eco.spring.starter.properties;
 
 import java.net.SocketAddress;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,7 +29,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * <p>Copy it from docs.
  *
- * @see <a href="https://pulsar.apache.org/docs/en/client-libraries-java/">Apache pulsar Client doc</a>
+ * @see <a href="https://pulsar.apache.org/docs/en/client-libraries-java/">Apache pulsar Client
+ *     doc</a>
  * @since 2.8.1
  * @author mattison
  */
@@ -44,9 +46,9 @@ public class PulsarProperties {
    *
    * <p>Example key1:val1,key2:val2
    */
-  private String authParams;
+  private Map<String, String> authParams;
   /* Operation timeout */
-  private Long operationTimeoutMs = 30000L;
+  private Integer operationTimeoutMs = 30000;
   /**
    * Interval between each status info
    *
