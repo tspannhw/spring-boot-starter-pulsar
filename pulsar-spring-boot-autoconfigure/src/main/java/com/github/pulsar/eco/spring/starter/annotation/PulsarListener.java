@@ -216,8 +216,8 @@ public @interface PulsarListener {
    * <p>When specifying the dead letter policy while not specifying ackTimeoutMillis, you can set
    * the ack timeout to 30000 millisecond.
    */
-  DeadLetterPolicy deadLetterPolicy() default
-      @DeadLetterPolicy(maxRedeliverCount = 0, retryLetterTopic = "", deadLetterTopic = "");
+  PulsarDeadLetterPolicy deadLetterPolicy() default
+      @PulsarDeadLetterPolicy(maxRedeliverCount = 0, retryLetterTopic = "", deadLetterTopic = "");
 
   /**
    * If autoUpdatePartitions is enabled, a consumer subscribes to partition increasement

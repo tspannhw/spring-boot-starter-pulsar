@@ -21,20 +21,31 @@ package com.github.pulsar.eco.spring.starter.delegate;
 
 import com.github.pulsar.eco.spring.starter.annotation.PulsarListener;
 import com.github.pulsar.eco.spring.starter.annotation.PulsarPayload;
+import com.github.pulsar.eco.spring.starter.annotation.PulsarProperties;
 import com.github.pulsar.eco.spring.starter.env.Schema;
 import com.github.pulsar.eco.spring.starter.exception.PulsarClientConfigException;
+import com.github.pulsar.eco.spring.starter.exception.PulsarConsumerException;
 import com.github.pulsar.eco.spring.starter.exception.PulsarIllegalStateException;
+import com.github.pulsar.eco.spring.starter.modal.Headers;
 import com.github.pulsar.eco.spring.starter.scanner.ConsumerScanner;
 import com.google.protobuf.GeneratedMessageV3;
 import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
+import org.apache.pulsar.client.api.DeadLetterPolicy;
+import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.PulsarClientException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.DependsOn;
@@ -82,8 +93,94 @@ public class ConsumerDelegate implements ApplicationListener<ApplicationReadyEve
               }
               Class<? extends Type> payloadKlass = methodTypes.get(0).getType().getClass();
               ConsumerBuilder<?> consumerBySchema = getConsumerBySchema(payloadKlass, schema);
-
-              // todo config consumer and consume message to delegate.
+              consumerBySchema.topic(listener.topicNames());
+              consumerBySchema.topicsPattern(listener.topicsPattern());
+              try {
+                Consumer<?> subscriber =
+                    consumerBySchema
+                        .subscriptionName(listener.subscriptionName())
+                        .subscriptionType(listener.subscriptionType())
+                        .receiverQueueSize(listener.receiverQueueSize())
+                        .acknowledgmentGroupTime(
+                            listener.acknowledgementsGroupTimeMicros(), TimeUnit.MICROSECONDS)
+                        .negativeAckRedeliveryDelay(
+                            listener.negativeAckRedeliveryDelayMicros(), TimeUnit.MICROSECONDS)
+                        .maxTotalReceiverQueueSizeAcrossPartitions(
+                            listener.maxTotalReceiverQueueSizeAcrossPartitions())
+                        .consumerName(listener.consumerName())
+                        .ackTimeout(listener.ackTimeoutMillis(), TimeUnit.MILLISECONDS)
+                        .ackTimeoutTickTime(listener.tickDurationMillis(), TimeUnit.MILLISECONDS)
+                        .priorityLevel(listener.priorityLevel())
+                        .cryptoFailureAction(listener.cryptoFailureAction())
+                        .properties(
+                            Arrays.stream(listener.properties())
+                                .collect(
+                                    Collectors.toMap(
+                                        PulsarProperties::key, PulsarProperties::value)))
+                        .readCompacted(listener.readCompacted())
+                        .subscriptionInitialPosition(listener.subscriptionInitialPosition())
+                        .patternAutoDiscoveryPeriod(listener.patternAutoDiscoveryPeriod())
+                        .subscriptionTopicsMode(listener.regexSubscriptionMode())
+                        .deadLetterPolicy(
+                            DeadLetterPolicy.builder()
+                                .maxRedeliverCount(listener.deadLetterPolicy().maxRedeliverCount())
+                                .deadLetterTopic(listener.deadLetterPolicy().deadLetterTopic())
+                                .retryLetterTopic(listener.deadLetterPolicy().retryLetterTopic())
+                                .build())
+                        .autoUpdatePartitions(listener.autoUpdatePartitions())
+                        .replicateSubscriptionState(listener.replicateSubscriptionState())
+                        .subscribe();
+                CompletableFuture<? extends Message<?>> asyncReceiveFuture =
+                    subscriber.receiveAsync();
+                asyncReceiveFuture.whenCompleteAsync(
+                    (message, error) -> {
+                      if (error != null) {
+                        throw new PulsarConsumerException("Got new client exception.", error);
+                      }
+                      Headers headers =
+                          Headers.builder()
+                              .isReplicated(message.isReplicated())
+                              .eventTime(message.getEventTime())
+                              .producerName(message.getProducerName())
+                              .key(message.getKey())
+                              .publishTime(message.getPublishTime())
+                              .redeliveryCount(message.getRedeliveryCount())
+                              .replicatedFrom(message.getReplicatedFrom())
+                              .schemaVersion(message.getSchemaVersion())
+                              .sequenceId(message.getSequenceId())
+                              .topicName(message.getTopicName())
+                              .properties(message.getProperties())
+                              .build();
+                      Object payload = message.getValue();
+                      Method delegateHandler = consumer.getHandler();
+                      Parameter[] parameters = delegateHandler.getParameters();
+                      Object[] params = new Object[parameters.length];
+                      for (int i = 0; i < parameters.length; i++) {
+                        if (parameters[i].isAnnotationPresent(PulsarPayload.class)) {
+                          params[i] = payload;
+                          continue;
+                        }
+                        if (parameters[i].getType() == Headers.class) {
+                          params[i] = headers;
+                          continue;
+                        }
+                        params[i] = null;
+                      }
+                      try {
+                        consumer.getHandler().setAccessible(true);
+                        consumer.getHandler().invoke(consumer.getDelegator(), params);
+                        subscriber.acknowledge(message);
+                      } catch (IllegalAccessException
+                          | InvocationTargetException
+                          | PulsarClientException e) {
+                        subscriber.negativeAcknowledge(message);
+                        e.printStackTrace();
+                      }
+                    });
+              } catch (PulsarClientException e) {
+                throw new PulsarConsumerException(
+                    String.format("Fail to create consumer %s", listener.consumerName()), e);
+              }
             });
   }
 

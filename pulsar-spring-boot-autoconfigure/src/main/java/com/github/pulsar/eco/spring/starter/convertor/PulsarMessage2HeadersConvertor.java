@@ -17,25 +17,8 @@
  *     under the License.
  */
 
-package com.github.pulsar.eco.spring.starter.annotation;
+package com.github.pulsar.eco.spring.starter.convertor;
 
-import org.apache.pulsar.client.api.ConsumerBuilder;
+public class PulsarMessage2HeadersConvertor {
 
-/**
- * Configuration for the "dead letter queue" feature in consumer.
- *
- * @see ConsumerBuilder#deadLetterPolicy(org.apache.pulsar.client.api.DeadLetterPolicy)
- */
-public @interface DeadLetterPolicy {
-  /**
-   * Maximum number of times that a message will be redelivered before being sent to the dead letter
-   * queue.
-   */
-  int maxRedeliverCount();
-
-  /** Name of the retry topic where the failing messages will be sent. */
-  String retryLetterTopic();
-
-  /** Name of the dead topic where the failing messages will be sent. */
-  String deadLetterTopic();
 }
