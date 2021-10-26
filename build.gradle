@@ -1,5 +1,5 @@
 plugins {
-  id "java"
+    id "java"
 }
 
 group = "com.github.pulsar.eco"
@@ -16,5 +16,8 @@ subprojects {
     apply plugin: "java"
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
+    }
+    dependencies {
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
     }
 }
