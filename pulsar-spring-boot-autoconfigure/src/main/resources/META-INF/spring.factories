@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=package com.github.pulsar.eco.spring.starter.PulsarAutoConfigure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.pulsar.eco.spring.starter.PulsarAutoConfigure

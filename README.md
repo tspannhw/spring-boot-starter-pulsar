@@ -1,1 +1,1 @@
-# spring-boot-starter-pulsar
+# spring-boot-com.github.pulsar.eco.spring.starter-pulsar

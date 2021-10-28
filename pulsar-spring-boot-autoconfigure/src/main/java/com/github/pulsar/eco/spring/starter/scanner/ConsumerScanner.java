@@ -54,6 +54,11 @@ public class ConsumerScanner implements BeanPostProcessor {
 
   private final Map<String, Consumer> container = Maps.newConcurrentMap();
 
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    return bean;
+  }
+
   /**
    * Override this method to find all consumer and store in container.
    *
@@ -63,8 +68,8 @@ public class ConsumerScanner implements BeanPostProcessor {
    * @throws BeansException - Spring Beans Exception
    */
   @Override
-  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    log.info("{} ready to load pulsar consumers", Symbol.PREFIX_EMOJI);
+  public Object postProcessBeforeInitialization(Object bean, String beanName)
+      throws BeansException {
     final Class<?> klass = bean.getClass();
     PulsarListener pulsarListener = klass.getDeclaredAnnotation(PulsarListener.class);
     if (pulsarListener != null) {
@@ -92,7 +97,6 @@ public class ConsumerScanner implements BeanPostProcessor {
                   stuffConsumerToContainer(
                       bean, method, method.getDeclaredAnnotation(PulsarListener.class)));
     }
-    log.info("{} already load {} pulsar consumers", Symbol.PREFIX_EMOJI, container.size());
     return bean;
   }
 

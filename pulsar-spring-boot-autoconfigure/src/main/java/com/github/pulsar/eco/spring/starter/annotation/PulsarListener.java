@@ -33,13 +33,13 @@ import org.apache.pulsar.client.api.SubscriptionType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PulsarListener {
   // Topic name
-  String[] topicNames() default {};
+  String[] topicNames();
   // Schema
   Schema schema() default Schema.BYTES;
   // Topic pattern
   String topicsPattern() default "";
   // Subscription name
-  String subscriptionName() default "";
+  String subscriptionName() ;
 
   /**
    * Subscription type
@@ -87,7 +87,7 @@ public @interface PulsarListener {
    */
   int maxTotalReceiverQueueSizeAcrossPartitions() default 50000;
   // Consumer name
-  String consumerName() default "";
+  String consumerName();
   // Timeout of unacked messages
   long ackTimeoutMillis() default 0;
 
