@@ -23,21 +23,22 @@ import com.github.pulsar.eco.spring.starter.annotation.PulsarHandler;
 import com.github.pulsar.eco.spring.starter.annotation.PulsarListener;
 import com.github.pulsar.eco.spring.starter.annotation.PulsarPayload;
 import com.github.pulsar.eco.spring.starter.env.Schema;
+import com.github.pulsar.eco.spring.starter.modal.Hero;
 import com.github.pulsar.eco.spring.starter.storage.InMemoryStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @PulsarListener(
-    topicNames = "test-2",
-    consumerName = "consumer-test-2",
-    subscriptionName = "subscription-test-2",
-    schema = Schema.STRING)
+    topicNames = "test-3",
+    consumerName = "consumer-test-3",
+    subscriptionName = "subscription-test-3",
+    schema = Schema.JSON)
 @Service
-public class PulsarListener2 {
+public class PulsarListener3 {
 
   @PulsarHandler
-  public void testConsumer2(@PulsarPayload String value) {
-    InMemoryStore.cache.put("test-2", value);
+  public void testConsumer3(@PulsarPayload Hero value) {
+    InMemoryStore.cache.put("test-3", value);
   }
 }

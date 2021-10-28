@@ -12,6 +12,7 @@ dependencies {
     implementation project(':pulsar-spring-boot-starter')
     testImplementation group: 'javax.inject', name: 'javax.inject', version: '1'
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '3.0.0'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.11.4'
 }
 
 test {

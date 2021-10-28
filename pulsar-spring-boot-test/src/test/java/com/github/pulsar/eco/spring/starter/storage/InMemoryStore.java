@@ -21,7 +21,6 @@ package com.github.pulsar.eco.spring.starter.storage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Data;
 import lombok.Singular;
 
 public class InMemoryStore {

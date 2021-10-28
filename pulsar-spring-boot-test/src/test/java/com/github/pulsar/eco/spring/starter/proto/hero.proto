@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package com.github.pulsar.eco.spring.starter.proto;
+
+option java_package = "com.github.pulsar.eco.spring.starter.proto";
+
+message Hero {
+    optional string name = 1;
+    optional int64 age = 2;
+    optional string duty = 3;
+}

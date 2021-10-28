@@ -39,7 +39,6 @@ public class BaseBroker {
                 + "  apachepulsar/pulsar:2.8.1"
                 + "  bin/pulsar standalone");
     log.info(exec.getDescription());
-    Thread.sleep(5000);
   }
 
   @AfterAll
