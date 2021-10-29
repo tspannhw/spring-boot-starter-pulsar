@@ -19,6 +19,30 @@
 
 package com.github.pulsar.eco.spring.starter.convertor;
 
+import com.github.pulsar.eco.spring.starter.modal.Headers;
+import org.apache.pulsar.client.api.Message;
+
+/**
+ * Pulsar message pojo convert to headers.
+ *
+ * @author mattisonchao
+ * @since 2.8.1
+ */
 public class PulsarMessage2HeadersConvertor {
 
+  public static Headers convert2(Message<?> message) {
+    return Headers.builder()
+        .isReplicated(message.isReplicated())
+        .eventTime(message.getEventTime())
+        .producerName(message.getProducerName())
+        .key(message.getKey())
+        .publishTime(message.getPublishTime())
+        .redeliveryCount(message.getRedeliveryCount())
+        .replicatedFrom(message.getReplicatedFrom())
+        .schemaVersion(message.getSchemaVersion())
+        .sequenceId(message.getSequenceId())
+        .topicName(message.getTopicName())
+        .properties(message.getProperties())
+        .build();
+  }
 }

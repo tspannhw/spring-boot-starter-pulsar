@@ -23,6 +23,7 @@ import com.github.pulsar.eco.spring.starter.annotation.PulsarListener;
 import com.github.pulsar.eco.spring.starter.annotation.PulsarPayload;
 import com.github.pulsar.eco.spring.starter.annotation.PulsarProperties;
 import com.github.pulsar.eco.spring.starter.constant.Symbol;
+import com.github.pulsar.eco.spring.starter.convertor.PulsarMessage2HeadersConvertor;
 import com.github.pulsar.eco.spring.starter.env.Schema;
 import com.github.pulsar.eco.spring.starter.exception.PulsarClientConfigException;
 import com.github.pulsar.eco.spring.starter.exception.PulsarConsumerException;
@@ -50,15 +51,12 @@ import org.apache.pulsar.client.api.PulsarClientException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @DependsOn({"pulsarClient", "consumerScanner"})
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE)
 public class ConsumerDelegate {
   private final ConsumerScanner scanner;
   private final PulsarClient pulsarClient;
@@ -170,20 +168,7 @@ public class ConsumerDelegate {
                       if (error != null) {
                         throw new PulsarConsumerException("Got new client exception.", error);
                       }
-                      Headers headers =
-                          Headers.builder()
-                              .isReplicated(message.isReplicated())
-                              .eventTime(message.getEventTime())
-                              .producerName(message.getProducerName())
-                              .key(message.getKey())
-                              .publishTime(message.getPublishTime())
-                              .redeliveryCount(message.getRedeliveryCount())
-                              .replicatedFrom(message.getReplicatedFrom())
-                              .schemaVersion(message.getSchemaVersion())
-                              .sequenceId(message.getSequenceId())
-                              .topicName(message.getTopicName())
-                              .properties(message.getProperties())
-                              .build();
+                      Headers headers = PulsarMessage2HeadersConvertor.convert2(message);
                       Object payload = message.getValue();
                       Method delegateHandler = consumer.getHandler();
                       Parameter[] parameters = delegateHandler.getParameters();

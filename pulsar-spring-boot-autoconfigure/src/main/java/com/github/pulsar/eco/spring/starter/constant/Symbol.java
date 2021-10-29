@@ -19,6 +19,12 @@
 
 package com.github.pulsar.eco.spring.starter.constant;
 
+/**
+ * Some symbol for log.
+ *
+ * @author mattisonchao
+ * @since 2.8.1
+ */
 public class Symbol {
   public static final String SLASH = "/";
   public static final String PREFIX_EMOJI = "╭◜◝ ͡ ◜◝╮";
