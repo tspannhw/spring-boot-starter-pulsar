@@ -1,1 +1,3 @@
-# spring-boot-com.github.pulsar.eco.spring.starter-pulsar
+# Apache Pulsar Spring Boot Starter
+
+waiting for release.
