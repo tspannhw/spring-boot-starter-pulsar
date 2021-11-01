@@ -36,31 +36,31 @@ public class PulsarTemplate {
     this.producerPool = producerPool;
   }
 
-  private MessageId send(byte[] bytes, String... topic) {
+  public MessageId send(byte[] bytes, String... topic) {
     PulsarOptions options =
         PulsarOptions.builder().schema(Schema.BYTES).topics(String.join(",", topic)).build();
     return send(bytes, options);
   }
 
-  private MessageId send(String str, String... topic) {
+  public MessageId send(String str, String... topic) {
     PulsarOptions options =
         PulsarOptions.builder().schema(Schema.STRING).topics(String.join(",", topic)).build();
     return send(str, options);
   }
 
-  private MessageId sendJson(Object obj, String... topic) {
+  public MessageId sendJson(Object obj, String... topic) {
     PulsarOptions options =
         PulsarOptions.builder().schema(Schema.JSON).topics(String.join(",", topic)).build();
     return send(obj, options);
   }
 
-  private MessageId sendAvro(Object obj, String... topic) {
+  public MessageId sendAvro(Object obj, String... topic) {
     PulsarOptions options =
         PulsarOptions.builder().schema(Schema.AVRO).topics(String.join(",", topic)).build();
     return send(obj, options);
   }
 
-  private MessageId sendProtobuf(Object obj, String... topic) {
+  public MessageId sendProtobuf(Object obj, String... topic) {
     PulsarOptions options =
         PulsarOptions.builder().schema(Schema.PROTOBUF).topics(String.join(",", topic)).build();
     return send(obj, options);
@@ -68,7 +68,7 @@ public class PulsarTemplate {
 
   @SneakyThrows
   @SuppressWarnings("unchecked")
-  private MessageId send(Object obj, PulsarOptions options) {
+  public MessageId send(Object obj, PulsarOptions options) {
     Producer<?> producer = producerPool.getOrCreateIfAbsent(options, obj);
     switch (options.getSchema()) {
       case STRING:

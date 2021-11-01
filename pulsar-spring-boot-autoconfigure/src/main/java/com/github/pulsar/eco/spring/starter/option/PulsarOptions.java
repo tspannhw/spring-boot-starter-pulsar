@@ -41,7 +41,7 @@ public class PulsarOptions {
    * <p>If a message is not acknowledged by a server before the sendTimeout expires, an error
    * occurs.
    */
-  private Long sendTimeoutMs;
+  private Integer sendTimeoutMs;
 
   /**
    * If it is set to true, when the outgoing message queue is full, the Send and SendAsync methods

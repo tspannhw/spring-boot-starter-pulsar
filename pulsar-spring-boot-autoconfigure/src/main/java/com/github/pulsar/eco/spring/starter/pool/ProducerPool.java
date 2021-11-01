@@ -19,12 +19,14 @@
 
 package com.github.pulsar.eco.spring.starter.pool;
 
+import static com.github.pulsar.eco.spring.starter.utils.CommonUtils.*;
 import com.github.pulsar.eco.spring.starter.env.Schema;
 import com.github.pulsar.eco.spring.starter.exception.PulsarProducerException;
 import com.github.pulsar.eco.spring.starter.option.PulsarOptions;
 import com.google.common.collect.Maps;
 import com.google.protobuf.GeneratedMessageV3;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.ProducerBuilder;
@@ -43,6 +45,27 @@ public class ProducerPool {
   @SneakyThrows
   private Producer<?> createNew(PulsarOptions options, Object obj) {
     ProducerBuilder<?> builder = getProducerBuilderBySchema(options.getSchema(), obj);
+    builder.topic(options.getTopics());
+    ifPresentStrThen(options.getProducerName(), builder::producerName);
+    ifPresentObjThen(
+        options.getSendTimeoutMs(),
+        (timeoutMs) -> builder.sendTimeout(timeoutMs, TimeUnit.MILLISECONDS));
+    ifPresentObjThen(options.getBlockIfQueueFull(), builder::blockIfQueueFull);
+    ifPresentObjThen(options.getMaxPendingMessages(), builder::maxPendingMessages);
+    ifPresentObjThen(
+        options.getMaxPendingMessagesAcrossPartitions(),
+        builder::maxPendingMessagesAcrossPartitions);
+    ifPresentObjThen(options.getMessageRoutingMode(), builder::messageRoutingMode);
+    ifPresentObjThen(options.getHashingScheme(), builder::hashingScheme);
+    ifPresentObjThen(options.getCryptoFailureAction(), builder::cryptoFailureAction);
+    ifPresentObjThen(
+        options.getBatchingMaxPublishDelayMicros(),
+        (times) ->
+            builder.batchingMaxPublishDelay(
+                options.getBatchingMaxPublishDelayMicros(), TimeUnit.MICROSECONDS));
+    ifPresentObjThen(options.getBatchingMaxMessages(), builder::batchingMaxMessages);
+    ifPresentObjThen(options.getBatchingEnabled(), builder::enableBatching);
+    ifPresentObjThen(options.getCompressionType(), builder::compressionType);
     return builder.create();
   }
 
@@ -67,6 +90,12 @@ public class ProducerPool {
   }
 
   public Producer<?> getOrCreateIfAbsent(PulsarOptions options, Object createIfAbsent) {
-    return PRODUCER_POOL.getOrDefault(options, createNew(options, createIfAbsent));
+    Producer<?> producer = PRODUCER_POOL.get(options);
+    if (producer == null) {
+      Producer<?> newProducer = createNew(options, createIfAbsent);
+      PRODUCER_POOL.put(options, newProducer);
+      return newProducer;
+    }
+    return producer;
   }
 }

@@ -24,13 +24,10 @@ import com.github.pulsar.eco.spring.starter.broker.BaseBroker;
 import com.github.pulsar.eco.spring.starter.modal.Hero;
 import com.github.pulsar.eco.spring.starter.proto.HeroWrapper;
 import com.github.pulsar.eco.spring.starter.storage.InMemoryStore;
+import com.github.pulsar.eco.spring.starter.template.PulsarTemplate;
 import java.nio.charset.StandardCharsets;
 import javax.inject.Inject;
-import org.apache.pulsar.client.api.Producer;
-import org.apache.pulsar.client.api.ProducerBuilder;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
-import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.MessageId;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,17 +37,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest(classes = Application.class)
 @ExtendWith(SpringExtension.class)
-public class PulsarSchemaTest extends BaseBroker {
-
-  @Inject private PulsarClient pulsarClient;
+public class PulsarSchemaSyncTest extends BaseBroker {
+  @Inject private PulsarTemplate pulsarTemplate;
 
   @Test
-  public void testBytes() throws PulsarClientException {
-    ProducerBuilder<byte[]> producerBuilder = pulsarClient.newProducer();
-    Producer<byte[]> producer =
-        producerBuilder.topic("test-1").producerName("producer-test-1").create();
-    byte[] message = "Hello Pulsar".getBytes(StandardCharsets.UTF_8);
-    producer.send(message);
+  public void testBytes() {
+    MessageId messageId =
+        pulsarTemplate.send("Hello Pulsar".getBytes(StandardCharsets.UTF_8), "test-1");
+    Assertions.assertNotNull(messageId);
     Awaitility.await()
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-1")));
     byte[] bytes = (byte[]) InMemoryStore.cache.get("test-1");
@@ -59,11 +53,9 @@ public class PulsarSchemaTest extends BaseBroker {
   }
 
   @Test
-  public void testString() throws PulsarClientException {
-    ProducerBuilder<String> producerBuilder = pulsarClient.newProducer(Schema.STRING);
-    Producer<String> producer =
-        producerBuilder.topic("test-2").producerName("producer-test-2").create();
-    producer.send("Hello Pulsar");
+  public void testString() {
+    MessageId messageId = pulsarTemplate.send("Hello Pulsar", "test-2");
+    Assertions.assertNotNull(messageId);
     Awaitility.await()
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-2")));
     String value = (String) InMemoryStore.cache.get("test-2");
@@ -71,12 +63,10 @@ public class PulsarSchemaTest extends BaseBroker {
   }
 
   @Test
-  public void testJson() throws PulsarClientException {
+  public void testJson() {
     Hero hero = Hero.builder().name("Pulsar-Hero").age(28).duty("Save the world").build();
-    ProducerBuilder<Hero> producerBuilder = pulsarClient.newProducer(Schema.JSON(Hero.class));
-    Producer<Hero> producer =
-        producerBuilder.topic("test-3").producerName("producer-test-3").create();
-    producer.send(hero);
+    MessageId messageId = pulsarTemplate.sendJson(hero, "test-3");
+    Assertions.assertNotNull(messageId);
     Awaitility.await()
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-3")));
     Hero value = (Hero) InMemoryStore.cache.get("test-3");
@@ -84,12 +74,10 @@ public class PulsarSchemaTest extends BaseBroker {
   }
 
   @Test
-  public void testAvro() throws PulsarClientException {
+  public void testAvro() {
     Hero hero = Hero.builder().name("Pulsar-Hero").age(28).duty("Save the world").build();
-    ProducerBuilder<Hero> producerBuilder = pulsarClient.newProducer(Schema.AVRO(Hero.class));
-    Producer<Hero> producer =
-        producerBuilder.topic("test-4").producerName("producer-test-4").create();
-    producer.send(hero);
+    MessageId messageId = pulsarTemplate.sendAvro(hero, "test-4");
+    Assertions.assertNotNull(messageId);
     Awaitility.await()
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-4")));
     Hero value = (Hero) InMemoryStore.cache.get("test-4");
@@ -97,18 +85,15 @@ public class PulsarSchemaTest extends BaseBroker {
   }
 
   @Test
-  public void testProtoBuf() throws PulsarClientException {
+  public void testProtoBuf() {
     HeroWrapper.Hero hero =
         HeroWrapper.Hero.newBuilder()
             .setName("Pulsar")
             .setAge(20)
             .setDuty("Save the world")
             .build();
-    ProducerBuilder<HeroWrapper.Hero> producerBuilder =
-        pulsarClient.newProducer(Schema.PROTOBUF(HeroWrapper.Hero.class));
-    Producer<HeroWrapper.Hero> producer =
-        producerBuilder.topic("test-5").producerName("producer-test-5").create();
-    producer.send(hero);
+    MessageId messageId = pulsarTemplate.sendProtobuf(hero, "test-5");
+    Assertions.assertNotNull(messageId);
     Awaitility.await()
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-5")));
     HeroWrapper.Hero value = (HeroWrapper.Hero) InMemoryStore.cache.get("test-5");
