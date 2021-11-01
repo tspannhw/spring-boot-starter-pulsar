@@ -33,6 +33,13 @@ import org.apache.pulsar.client.api.ProducerBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.springframework.stereotype.Component;
 
+/**
+ * Create pool {@link java.util.concurrent.ConcurrentHashMap} to save all producer. Support get and
+ * create new producer method.
+ *
+ * @author mattison
+ * @since 1.0.0
+ */
 @Component
 public class ProducerPool {
   private final PulsarClient pulsarClient;

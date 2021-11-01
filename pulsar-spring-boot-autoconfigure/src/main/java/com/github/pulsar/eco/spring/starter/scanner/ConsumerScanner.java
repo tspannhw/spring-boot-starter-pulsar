@@ -44,7 +44,7 @@ import org.springframework.util.CollectionUtils;
  *
  * <p>Use this class to store all consumer and delegate all request to consumer.
  *
- * @since 2.8.1
+ * @since 1.0.0
  * @author mattison
  */
 @Component

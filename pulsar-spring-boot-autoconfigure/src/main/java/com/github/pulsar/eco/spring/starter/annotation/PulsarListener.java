@@ -30,7 +30,18 @@ import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 
 /**
- * Listener
+ * Annotation that marks a method to be the target of a Pulsar message listener on the specified
+ * {@link #topicNames()} ()}.
+ *
+ * <ul>
+ *   <li>{@link com.github.pulsar.eco.spring.starter.annotation.PulsarListener @Payload}-annotated
+ *       method arguments including the support of validation
+ *   <li>{@link com.github.pulsar.eco.spring.starter.modal.Headers }- method arguments to extract a
+ *       specific header value, including standard Pulsar headers.
+ * </ul>
+ *
+ * @author mattison
+ * @since 1.0.0
  */
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -42,7 +53,7 @@ public @interface PulsarListener {
   // Topic pattern
   String topicsPattern() default "";
   // Subscription name
-  String subscriptionName() ;
+  String subscriptionName();
 
   /**
    * Subscription type

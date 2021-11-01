@@ -27,11 +27,18 @@ import org.apache.pulsar.client.api.HashingScheme;
 import org.apache.pulsar.client.api.MessageRoutingMode;
 import org.apache.pulsar.client.api.ProducerCryptoFailureAction;
 
+/**
+ * Producer Configuration.
+ *
+ * @since 1.0.0
+ * @author mattison
+ */
 @Data
 @Builder
 public class PulsarOptions {
+  // producer message schema
   private Schema schema;
-
+  // producer topics
   private String topics;
   // Producer name
   private String producerName;

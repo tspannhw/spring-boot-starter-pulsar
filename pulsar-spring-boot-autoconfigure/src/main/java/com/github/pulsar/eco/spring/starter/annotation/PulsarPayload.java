@@ -25,6 +25,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.core.annotation.AliasFor;
 
+/**
+ * Annotation that binds a method parameter to the payload of a message. Can also be used to
+ * associate a payload to a method invocation.
+ *
+ * @since 1.0
+ * @author mattison
+ */
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PulsarPayload {

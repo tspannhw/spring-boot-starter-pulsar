@@ -23,6 +23,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Pulsar Client properties key-value pair.
+ *
+ * @see PulsarListener
+ * @author mattison
+ * @since 1.0.0
+ */
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PulsarProperties {

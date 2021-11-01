@@ -31,7 +31,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @see <a href="https://pulsar.apache.org/docs/en/client-libraries-java/">Apache pulsar Client
  *     doc</a>
- * @since 2.8.1
+ * @since 1.0.0
  * @author mattison
  */
 @Data

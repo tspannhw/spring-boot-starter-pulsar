@@ -25,6 +25,8 @@ import org.apache.pulsar.client.api.ConsumerBuilder;
  * Configuration for the "dead letter queue" feature in consumer.
  *
  * @see ConsumerBuilder#deadLetterPolicy(org.apache.pulsar.client.api.DeadLetterPolicy)
+ * @since 1.0.0
+ * @author mattison
  */
 public @interface PulsarDeadLetterPolicy {
   /**

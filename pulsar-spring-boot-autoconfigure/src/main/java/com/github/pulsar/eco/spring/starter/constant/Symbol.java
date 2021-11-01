@@ -23,7 +23,7 @@ package com.github.pulsar.eco.spring.starter.constant;
  * Some symbol for log.
  *
  * @author mattisonchao
- * @since 2.8.1
+ * @since 1.0.0
  */
 public class Symbol {
   public static final String SLASH = "/";

@@ -26,7 +26,7 @@ import org.apache.pulsar.client.api.Message;
  * Pulsar message pojo convert to headers.
  *
  * @author mattisonchao
- * @since 2.8.1
+ * @since 1.0.0
  */
 public class PulsarMessage2HeadersConvertor {
 

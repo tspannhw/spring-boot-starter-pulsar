@@ -54,6 +54,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+/**
+ * Delegate the consumer,call the delegate object when the message arrives
+ *
+ * @author mattison
+ * @since 1.0.0
+ */
 @Slf4j
 @DependsOn({"pulsarClient", "consumerScanner"})
 @Component

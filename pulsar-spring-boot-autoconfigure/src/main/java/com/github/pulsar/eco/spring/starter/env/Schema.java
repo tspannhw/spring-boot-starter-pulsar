@@ -19,6 +19,12 @@
 
 package com.github.pulsar.eco.spring.starter.env;
 
+/**
+ * Pulsar message schema, copy from {@link org.apache.pulsar.client.api.Schema}
+ *
+ * @author mattison
+ * @since 1.0.0
+ */
 public enum Schema {
   BYTES,
   PROTOBUF,

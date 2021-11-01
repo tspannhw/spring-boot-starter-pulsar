@@ -24,6 +24,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation that marks a method to be the target of a Pulsar message listener within a class that
+ * is annotated with {@link PulsarListener}.
+ *
+ * <p>See the {@link PulsarListener} for information about permitted method signatures and available
+ * parameters.
+ *
+ * <p><b>It is important to understand that when a message arrives, the method selection depends on
+ * the payload type. The type is matched with a single non-annotated parameter, or one that is
+ * annotated with {@code @Payload}. There must be no ambiguity - the system must be able to select
+ * exactly one method based on the payload type.</b>
+ *
+ * @author mattison
+ * @since 1.0.0
+ */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PulsarHandler {}
