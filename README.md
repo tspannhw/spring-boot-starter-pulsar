@@ -1,7 +1,8 @@
 # Apache Pulsar Spring Boot Starter
 
-<img align="right" src="">
+<img align="right" src="https://raw.githubusercontent.com/pulsar-eco/spring-boot-starter-pulsar/main/docs/imges/logo-mini.png">
 
+[![Integretion Test](https://github.com/pulsar-eco/spring-boot-starter-pulsar/actions/workflows/integretion_test.yml/badge.svg)](https://github.com/pulsar-eco/spring-boot-starter-pulsar/actions/workflows/integretion_test.yml)
 [![Java 8+](https://img.shields.io/badge/java-8+-4c7e9f.svg)](http://java.oracle.com)
 [![Apache License 2](https://img.shields.io/badge/license-APL2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
