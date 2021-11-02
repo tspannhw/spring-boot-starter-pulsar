@@ -26,6 +26,7 @@ import com.github.pulsar.eco.spring.starter.proto.HeroWrapper;
 import com.github.pulsar.eco.spring.starter.storage.InMemoryStore;
 import com.github.pulsar.eco.spring.starter.template.PulsarTemplate;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import org.apache.pulsar.client.api.MessageId;
 import org.awaitility.Awaitility;
@@ -46,6 +47,7 @@ public class PulsarSchemaSyncTest extends BaseBroker {
         pulsarTemplate.send("Hello Pulsar".getBytes(StandardCharsets.UTF_8), "test-1");
     Assertions.assertNotNull(messageId);
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-1")));
     byte[] bytes = (byte[]) InMemoryStore.cache.get("test-1");
     String value = new String(bytes);
@@ -57,6 +59,7 @@ public class PulsarSchemaSyncTest extends BaseBroker {
     MessageId messageId = pulsarTemplate.send("Hello Pulsar", "test-2");
     Assertions.assertNotNull(messageId);
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-2")));
     String value = (String) InMemoryStore.cache.get("test-2");
     Assertions.assertEquals(value, "Hello Pulsar");
@@ -68,6 +71,7 @@ public class PulsarSchemaSyncTest extends BaseBroker {
     MessageId messageId = pulsarTemplate.sendJson(hero, "test-3");
     Assertions.assertNotNull(messageId);
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-3")));
     Hero value = (Hero) InMemoryStore.cache.get("test-3");
     Assertions.assertEquals(value, hero);
@@ -79,6 +83,7 @@ public class PulsarSchemaSyncTest extends BaseBroker {
     MessageId messageId = pulsarTemplate.sendAvro(hero, "test-4");
     Assertions.assertNotNull(messageId);
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-4")));
     Hero value = (Hero) InMemoryStore.cache.get("test-4");
     Assertions.assertEquals(value, hero);
@@ -95,6 +100,7 @@ public class PulsarSchemaSyncTest extends BaseBroker {
     MessageId messageId = pulsarTemplate.sendProtobuf(hero, "test-5");
     Assertions.assertNotNull(messageId);
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-5")));
     HeroWrapper.Hero value = (HeroWrapper.Hero) InMemoryStore.cache.get("test-5");
     Assertions.assertEquals(value, hero);

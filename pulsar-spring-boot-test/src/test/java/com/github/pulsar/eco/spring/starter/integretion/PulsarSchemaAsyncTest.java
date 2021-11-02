@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import org.apache.pulsar.client.api.MessageId;
 import org.awaitility.Awaitility;
@@ -54,9 +55,11 @@ public class PulsarSchemaAsyncTest extends BaseBroker {
           InMemoryStore.cache.put("message-id-test-1", messageId);
         });
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> Assertions.assertNotNull(InMemoryStore.cache.get("message-id-test-1")));
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-1")));
     byte[] bytes = (byte[]) InMemoryStore.cache.get("test-1");
     String value = new String(bytes);
@@ -71,9 +74,11 @@ public class PulsarSchemaAsyncTest extends BaseBroker {
           InMemoryStore.cache.put("message-id-test-2", messageId);
         });
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> Assertions.assertNotNull(InMemoryStore.cache.get("message-id-test-2")));
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-2")));
     String value = (String) InMemoryStore.cache.get("test-2");
     Assertions.assertEquals(value, "Hello Pulsar");
@@ -88,9 +93,11 @@ public class PulsarSchemaAsyncTest extends BaseBroker {
           InMemoryStore.cache.put("message-id-test-3", messageId);
         });
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> Assertions.assertNotNull(InMemoryStore.cache.get("message-id-test-3")));
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-3")));
     Hero value = (Hero) InMemoryStore.cache.get("test-3");
     Assertions.assertEquals(value, hero);
@@ -105,9 +112,11 @@ public class PulsarSchemaAsyncTest extends BaseBroker {
           InMemoryStore.cache.put("message-id-test-4", messageId);
         });
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> Assertions.assertNotNull(InMemoryStore.cache.get("message-id-test-4")));
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-4")));
     Hero value = (Hero) InMemoryStore.cache.get("test-4");
     Assertions.assertEquals(value, hero);
@@ -127,9 +136,11 @@ public class PulsarSchemaAsyncTest extends BaseBroker {
           InMemoryStore.cache.put("message-id-test-5", messageId);
         });
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> Assertions.assertNotNull(InMemoryStore.cache.get("message-id-test-5")));
     Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(() -> Assertions.assertNotNull(InMemoryStore.cache.get("test-5")));
     HeroWrapper.Hero value = (HeroWrapper.Hero) InMemoryStore.cache.get("test-5");
     Assertions.assertEquals(value, hero);
